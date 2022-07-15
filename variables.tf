@@ -1,13 +1,23 @@
 ## general parameters
+variable "ami_id" {
+  type        = string
+  description = "ami to launch the ec2 instance from, windows images not supported"
+  default     = ""
+}
 variable "instance_type" {
   type        = string
   description = "AWS instance type"
   default     = "t3.medium"
 }
-variable "ami_id" {
+variable "instance_volume_size" {
+  type        = number
+  description = "Instance volume size (GB)"
+  default     = 8
+}
+variable "instance_root_device_name" {
   type        = string
-  description = "ami to launch the ec2 instance from, windows images not supported"
-  default     = ""
+  description = "Root device name (this is specified per AMI)"
+  default     = "/dev/xvda"
 }
 variable "security_group_ids" {
   type        = list(string)

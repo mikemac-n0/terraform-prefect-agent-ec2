@@ -8,6 +8,13 @@ resource "aws_launch_template" "prefect" {
 
   vpc_security_group_ids = var.security_group_ids == null ? [aws_security_group.sg[0].id] : var.security_group_ids
 
+  block_device_mappings {
+    device_name = var.instance_root_device_name
+    ebs {
+      volume_size = var.instance_volume_size
+    }
+  }
+
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
   }
