@@ -4,6 +4,11 @@ variable "ami_id" {
   description = "ami to launch the ec2 instance from, windows images not supported"
   default     = ""
 }
+variable "ami_filter_patterns" {
+  type        = list(string)
+  description = ""
+  default     = ["amzn2-ami-hvm-*-x86_64-ebs"]
+}
 variable "instance_type" {
   type        = string
   description = "AWS instance type"
