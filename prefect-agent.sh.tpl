@@ -66,6 +66,31 @@ WantedBy=multi-user.target " >> /etc/systemd/system/prefect-agent.service
 # start prefect agent
 systemctl start prefect-agent
 
+# Install recurring docker cleanup job.
+touch /etc/systemd/system/docker-cleanup.service
+echo "[Unit]
+Description=Cleans up docker debris
+Wants=docker-cleanup.timer
+[Service]
+Type=oneshot
+ExecStart=/bin/docker system prune --force --all --filter \"until=48h\"
+ExecStart=/bin/docker system prune --force --volumes
+[Install]
+WantedBy=multi-user.target " >> /etc/systemd/system/docker-cleanup.service
+
+touch /etc/systemd/system/docker-cleanup.timer
+echo "[Unit]
+Description=Runs docker cleanup on schedule
+Requires=docker-cleanup.service
+[Timer]
+Unit=docker-cleanup.service
+OnCalendar=00,12:00:00
+[Install]
+WantedBy=timers.target " >> /etc/systemd/system/docker-cleanup.timer
+
+# start docker cleanup job
+systemctl start docker-cleanup.timer
+
 # install cred helper
 amazon-linux-extras enable docker
 yum install amazon-ecr-credential-helper -y
