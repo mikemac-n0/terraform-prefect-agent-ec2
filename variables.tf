@@ -19,6 +19,11 @@ variable "instance_volume_size" {
   description = "Instance volume size (GB)"
   default     = 8
 }
+variable "instance_volume_type" {
+  type        = string
+  description = "Instance volume type"
+  default     = "standard"
+}
 variable "instance_root_device_name" {
   type        = string
   description = "Root device name (this is specified per AMI)"

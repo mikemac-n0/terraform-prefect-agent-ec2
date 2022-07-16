@@ -12,6 +12,7 @@ resource "aws_launch_template" "prefect" {
     device_name = var.instance_root_device_name
     ebs {
       volume_size = var.instance_volume_size
+      volume_type = var.instance_volume_type
     }
   }
 
