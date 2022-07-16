@@ -13,7 +13,10 @@ cd /
 amazon-linux-extras install docker -y
 service docker start
 
-# intall jq
+# install compiler and deps
+yum install gcc python3-devel -y
+
+# install jq
 yum install jq -y
 
 # install aws logs
