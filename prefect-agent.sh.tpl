@@ -28,11 +28,6 @@ cwlogs = cwlogs
 [default]
 region = ${region}" > /etc/awslogs/awscli.conf
 
-# Set region in config file.
-mkdir -p /root/.aws
-echo "[default]
-region = ${region}" > /root/.aws/config
-
 # start the logs service
 systemctl start awslogsd
 systemctl enable awslogsd.service
