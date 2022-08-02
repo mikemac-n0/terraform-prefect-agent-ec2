@@ -2,9 +2,9 @@
 yum update -y
 
 # install ssm
-cd /tmp 
+cd /tmp
 yum install -y https://s3.${region}.amazonaws.com/amazon-ssm-${region}/latest/${linux_type}/amazon-ssm-agent.rpm
-systemctl enable amazon-ssm-agent 
+systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
 
 cd /
@@ -26,14 +26,14 @@ yum install awslogs -y
 echo "[plugins]
 cwlogs = cwlogs
 [default]
-region = ${region}" > /etc/awslogs/awscli.conf
+region = ${region}" >/etc/awslogs/awscli.conf
 
 # start the logs service
 systemctl start awslogsd
 systemctl enable awslogsd.service
 
 # prefect agent install
-pip3 install prefect
+pip3 install --upgrade "prefect<2"
 
 # get API key
 result=$(aws secretsmanager get-secret-value --secret-id ${prefect_secret_name} --region ${region})
@@ -46,7 +46,7 @@ touch ~/.prefect/config.toml
 echo "
 [cloud.agent]
 labels = ${prefect_labels}
-" > ~/.prefect/config.toml
+" >~/.prefect/config.toml
 
 # create systemd config
 touch /etc/systemd/system/prefect-agent.service
@@ -61,7 +61,7 @@ RestartSec=5
 User=root
 ExecStart=/usr/local/bin/prefect agent docker start --network host --key $PREFECT_API_KEY --api ${prefect_api_address} ${image_pulling} ${flow_logs} ${config_id}
 [Install]
-WantedBy=multi-user.target " >> /etc/systemd/system/prefect-agent.service
+WantedBy=multi-user.target " >>/etc/systemd/system/prefect-agent.service
 
 # start prefect agent
 systemctl start prefect-agent
@@ -76,7 +76,7 @@ Type=oneshot
 ExecStart=/bin/docker system prune --force --all --filter \"until=48h\"
 ExecStart=/bin/docker system prune --force --volumes
 [Install]
-WantedBy=multi-user.target " >> /etc/systemd/system/docker-cleanup.service
+WantedBy=multi-user.target " >>/etc/systemd/system/docker-cleanup.service
 
 touch /etc/systemd/system/docker-cleanup.timer
 echo "[Unit]
@@ -86,7 +86,7 @@ Requires=docker-cleanup.service
 Unit=docker-cleanup.service
 OnCalendar=00,12:00:00
 [Install]
-WantedBy=timers.target " >> /etc/systemd/system/docker-cleanup.timer
+WantedBy=timers.target " >>/etc/systemd/system/docker-cleanup.timer
 
 # start docker cleanup job
 systemctl start docker-cleanup.timer
@@ -99,4 +99,4 @@ mkdir ~/.docker
 touch ~/.docker/config.json
 echo '{
 	"credsStore": "ecr-login"
-}' >> ~/.docker/config.json
+}' >>~/.docker/config.json
